@@ -3,7 +3,7 @@ package encoder
 import (
 	"time"
 
-	"github.com/lunuan/gopkg/log/pool"
+	"github.com/lunuan/log/pool"
 	"go.uber.org/zap/zapcore"
 )
 

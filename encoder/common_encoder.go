@@ -5,7 +5,7 @@ import (
 	// "encoding/json"
 	"fmt"
 
-	"github.com/lunuan/gopkg/log/bufferpool"
+	"github.com/lunuan/log/bufferpool"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
 )
