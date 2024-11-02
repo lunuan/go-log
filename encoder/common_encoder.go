@@ -4,6 +4,8 @@ import (
 
 	// "encoding/json"
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/lunuan/go-log/bufferpool"
 	"go.uber.org/zap/buffer"
@@ -33,7 +35,8 @@ func (c CommonEncoder) EncodeEntry(ent zapcore.Entry, fields []zapcore.Field) (*
 		c.EncodeTime(ent.Time, arr)
 	}
 	// [process]
-	arr.AppendString("[main]")
+	pid := strconv.Itoa(os.Getpid())
+	arr.AppendString("[" + pid + "]")
 	// hostname
 	arr.AppendString(c.hostname)
 	// level
