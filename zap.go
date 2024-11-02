@@ -21,6 +21,22 @@ const (
 	RotateMaxBackups = 15
 )
 
+func NewDefaultEncoderConfig() *zapcore.EncoderConfig {
+	DefaultEncoderConfig := zap.NewProductionEncoderConfig()
+	DefaultEncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05,000")
+	DefaultEncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	DefaultEncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+	DefaultEncoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
+	DefaultEncoderConfig.EncodeName = zapcore.FullNameEncoder
+	DefaultEncoderConfig.ConsoleSeparator = " "
+	DefaultEncoderConfig.LineEnding = zapcore.DefaultLineEnding
+	DefaultEncoderConfig.MessageKey = "message"
+	DefaultEncoderConfig.StacktraceKey = "stacktrace"
+	DefaultEncoderConfig.CallerKey = "caller"
+	DefaultEncoderConfig.FunctionKey = "function"
+	return &DefaultEncoderConfig
+}
+
 func NewLogger(conf *Config) *zap.Logger {
 	return initZapLogger(conf)
 }
@@ -61,33 +77,19 @@ func initZapLogger(conf *Config) *zap.Logger {
 
 	//log encoder
 	var encoder zapcore.Encoder
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05,000")
-	// encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-
-	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
-	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
-	encoderConfig.EncodeName = zapcore.FullNameEncoder
-	encoderConfig.ConsoleSeparator = " "
-	encoderConfig.LineEnding = zapcore.DefaultLineEnding
-	encoderConfig.MessageKey = "message"
-	encoderConfig.StacktraceKey = "stacktrace"
-	encoderConfig.CallerKey = "caller"
-	encoderConfig.FunctionKey = "function"
+	if conf.Encoder == nil {
+		conf.Encoder = NewDefaultEncoderConfig()
+	}
 
 	switch conf.Format {
 	case "json":
-		encoderConfig.EncodeLevel = zapcore.LowercaseLevelEncoder
-		encoder = zapcore.NewJSONEncoder(encoderConfig)
+		encoder = zapcore.NewJSONEncoder(*conf.Encoder)
 	case "console":
-		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+		encoder = zapcore.NewConsoleEncoder(*conf.Encoder)
 	case "common":
-		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		encoder = enc.NewCommonEncoder(encoderConfig)
+		encoder = enc.NewCommonEncoder(*conf.Encoder)
 	default:
-		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		encoder = enc.NewCommonEncoder(encoderConfig)
+		encoder = enc.NewCommonEncoder(*conf.Encoder)
 	}
 
 	//log Level

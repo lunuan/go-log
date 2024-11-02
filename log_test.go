@@ -1,13 +1,22 @@
 package log
 
-import "testing"
+import (
+	"testing"
+
+	"go.uber.org/zap/zapcore"
+)
 
 func TestInitLogger(t *testing.T) {
 	c := &Config{
 		FilePath: "/tmp/test-init-logger.log",
-		Format:   "common",
+		Format:   "",
 		Level:    "debug",
 	}
+
+	encoderConfig := NewDefaultEncoderConfig()
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+	c.Encoder = encoderConfig
 	Init(c)
 
 	Debug("test debug")

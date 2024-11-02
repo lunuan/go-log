@@ -2,6 +2,7 @@ package log
 
 import (
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var logger *zap.SugaredLogger
@@ -11,6 +12,7 @@ type Config struct {
 	Level    string
 	FilePath string
 	Rotate   RotateConfig
+	Encoder  *zapcore.EncoderConfig
 }
 
 type RotateConfig struct {
