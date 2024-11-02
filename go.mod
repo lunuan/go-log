@@ -1,4 +1,4 @@
-module github.com/lunuan/log
+module github.com/lunuan/go-log
 
 go 1.21.6
 

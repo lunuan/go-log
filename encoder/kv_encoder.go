@@ -11,8 +11,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/lunuan/log/bufferpool"
-	"github.com/lunuan/log/pool"
+	"github.com/lunuan/go-log/bufferpool"
+	"github.com/lunuan/go-log/pool"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
 )

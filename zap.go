@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	enc "github.com/lunuan/log/encoder"
+	enc "github.com/lunuan/go-log/encoder"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
