@@ -30,11 +30,11 @@ func Debug(msg string) {
 	logger.Debug(msg)
 }
 
-func Debugf(msg string, args ...interface{}) {
+func Debugf(msg string, args ...any) {
 	logger.Debugf(msg, args...)
 }
 
-func Debugw(msg string, keysAndValues ...interface{}) {
+func Debugw(msg string, keysAndValues ...any) {
 	logger.Debugw(msg, keysAndValues...)
 }
 
@@ -42,11 +42,11 @@ func Info(msg string) {
 	logger.Info(msg)
 }
 
-func Infof(msg string, args ...interface{}) {
+func Infof(msg string, args ...any) {
 	logger.Infof(msg, args...)
 }
 
-func Infow(msg string, keysAndValues ...interface{}) {
+func Infow(msg string, keysAndValues ...any) {
 	logger.Infow(msg, keysAndValues...)
 }
 
@@ -54,11 +54,11 @@ func Warn(msg string) {
 	logger.Warn(msg)
 }
 
-func Warnf(msg string, args ...interface{}) {
+func Warnf(msg string, args ...any) {
 	logger.Warnf(msg, args...)
 }
 
-func Warnw(msg string, keysAndValues ...interface{}) {
+func Warnw(msg string, keysAndValues ...any) {
 	logger.Warnw(msg, keysAndValues...)
 }
 
@@ -66,34 +66,34 @@ func Error(msg string) {
 	logger.Error(msg)
 }
 
-func Errorf(msg string, args ...interface{}) {
+func Errorf(msg string, args ...any) {
 	logger.Errorf(msg, args...)
 }
 
-func Errorw(msg string, keysAndValues ...interface{}) {
+func Errorw(msg string, keysAndValues ...any) {
 	logger.Errorw(msg, keysAndValues...)
 }
 
-func Fatal(args ...interface{}) {
+func Fatal(args ...any) {
 	logger.Fatal(args)
 }
 
-func Fatalf(template string, args ...interface{}) {
+func Fatalf(template string, args ...any) {
 	logger.Fatalf(template, args...)
 }
 
-func Fatalw(msg string, keysAndValues ...interface{}) {
+func Fatalw(msg string, keysAndValues ...any) {
 	logger.Fatalw(msg, keysAndValues...)
 }
 
-func Panic(args ...interface{}) {
+func Panic(args ...any) {
 	logger.Panic(args)
 }
 
-func Panicf(template string, args ...interface{}) {
+func Panicf(template string, args ...any) {
 	logger.Panicf(template, args...)
 }
 
-func Panicw(msg string, keysAndValues ...interface{}) {
+func Panicw(msg string, keysAndValues ...any) {
 	logger.Panicw(msg, keysAndValues...)
 }
