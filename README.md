@@ -1,0 +1,1 @@
+A project implemented based on [zap](https://pkg.go.dev/go.uber.org/zap) that enables developers to print logs directly.

@@ -5,7 +5,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var logger *zap.SugaredLogger
+var logger *zap.Logger
+var sugar *zap.SugaredLogger
 
 type Config struct {
 	Format   string
@@ -22,78 +23,99 @@ type RotateConfig struct {
 	MaxBackups int
 }
 
+func init() {
+	encoder := NewDefaultEncoderConfig()
+	encoder.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	conf := &Config{
+		Format:   "console",
+		Level:    "debug",
+		FilePath: "",
+		Encoder:  encoder,
+	}
+	logger = NewLogger(conf)
+	sugar = logger.Sugar()
+}
+
 func Init(config *Config) {
-	logger = NewSugaredLogger(config)
+	sugar = NewSugaredLogger(config)
+}
+
+func GetLogger() *zap.Logger {
+	return logger
+}
+
+func GetSugaredLogger() *zap.SugaredLogger {
+	return sugar
 }
 
 func Debug(msg string) {
-	logger.Debug(msg)
+	sugar.Debug(msg)
 }
 
 func Debugf(msg string, args ...any) {
-	logger.Debugf(msg, args...)
+	sugar.Debugf(msg, args...)
 }
 
 func Debugw(msg string, keysAndValues ...any) {
-	logger.Debugw(msg, keysAndValues...)
+	sugar.Debugw(msg, keysAndValues...)
 }
 
 func Info(msg string) {
-	logger.Info(msg)
+	sugar.Info(msg)
 }
 
 func Infof(msg string, args ...any) {
-	logger.Infof(msg, args...)
+	sugar.Infof(msg, args...)
 }
 
 func Infow(msg string, keysAndValues ...any) {
-	logger.Infow(msg, keysAndValues...)
+	sugar.Infow(msg, keysAndValues...)
 }
 
 func Warn(msg string) {
-	logger.Warn(msg)
+	sugar.Warn(msg)
 }
 
 func Warnf(msg string, args ...any) {
-	logger.Warnf(msg, args...)
+	sugar.Warnf(msg, args...)
 }
 
 func Warnw(msg string, keysAndValues ...any) {
-	logger.Warnw(msg, keysAndValues...)
+	sugar.Warnw(msg, keysAndValues...)
 }
 
 func Error(msg string) {
-	logger.Error(msg)
+	sugar.Error(msg)
 }
 
 func Errorf(msg string, args ...any) {
-	logger.Errorf(msg, args...)
+	sugar.Errorf(msg, args...)
 }
 
 func Errorw(msg string, keysAndValues ...any) {
-	logger.Errorw(msg, keysAndValues...)
+	sugar.Errorw(msg, keysAndValues...)
 }
 
 func Fatal(args ...any) {
-	logger.Fatal(args)
+	sugar.Fatal(args)
 }
 
 func Fatalf(template string, args ...any) {
-	logger.Fatalf(template, args...)
+	sugar.Fatalf(template, args...)
 }
 
 func Fatalw(msg string, keysAndValues ...any) {
-	logger.Fatalw(msg, keysAndValues...)
+	sugar.Fatalw(msg, keysAndValues...)
 }
 
 func Panic(args ...any) {
-	logger.Panic(args)
+	sugar.Panic(args)
 }
 
 func Panicf(template string, args ...any) {
-	logger.Panicf(template, args...)
+	sugar.Panicf(template, args...)
 }
 
 func Panicw(msg string, keysAndValues ...any) {
-	logger.Panicw(msg, keysAndValues...)
+	sugar.Panicw(msg, keysAndValues...)
 }
