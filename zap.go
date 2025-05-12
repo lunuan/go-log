@@ -83,13 +83,12 @@ func initZapLogger(conf *Config) *zap.Logger {
 
 	switch conf.Format {
 	case "json":
+		conf.Encoder.EncodeLevel = zapcore.CapitalLevelEncoder
 		encoder = zapcore.NewJSONEncoder(*conf.Encoder)
 	case "console":
 		encoder = zapcore.NewConsoleEncoder(*conf.Encoder)
-	case "common":
-		encoder = enc.NewCommonEncoder(*conf.Encoder)
 	default:
-		encoder = enc.NewCommonEncoder(*conf.Encoder)
+		encoder = enc.NewkvEncoder(*conf.Encoder)
 	}
 
 	//log Level

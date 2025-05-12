@@ -1,7 +1,13 @@
-package pool
+package encoder
 
 import (
 	"sync"
+
+	"go.uber.org/zap/buffer"
+)
+
+var (
+	BufferPool = buffer.NewPool()
 )
 
 // A Pool is a generic wrapper around [sync.Pool] to provide strongly-typed
@@ -16,7 +22,7 @@ type Pool[T any] struct {
 
 // New returns a new [Pool] for T, and will use fn to construct new Ts when
 // the pool is empty.
-func New[T any](fn func() T) *Pool[T] {
+func NewPool[T any](fn func() T) *Pool[T] {
 	return &Pool[T]{
 		pool: sync.Pool{
 			New: func() any {

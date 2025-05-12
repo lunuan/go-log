@@ -9,7 +9,7 @@ import (
 func TestInitLogger(t *testing.T) {
 	c := &Config{
 		FilePath: "/tmp/test-init-logger.log",
-		Format:   "",
+		Format:   "console",
 		Level:    "debug",
 	}
 
@@ -33,7 +33,7 @@ func TestInitLogger(t *testing.T) {
 
 	Error("test error")
 	Errorf("test errorf %s", "test")
-	Errorw("test errorw", "key", "value")
+	Errorw("test errorw", "key", "value", "k1", "v1")
 
 	// Fatal("test fatal")
 	// Fatalf("test fatalf %s", "test")

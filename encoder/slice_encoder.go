@@ -3,11 +3,10 @@ package encoder
 import (
 	"time"
 
-	"github.com/lunuan/go-log/pool"
 	"go.uber.org/zap/zapcore"
 )
 
-var _sliceEncoderPool = pool.New(func() *sliceArrayEncoder {
+var _sliceEncoderPool = NewPool(func() *sliceArrayEncoder {
 	return &sliceArrayEncoder{
 		elems: make([]interface{}, 0, 2),
 	}

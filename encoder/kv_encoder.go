@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"strconv"
 
 	"fmt"
 	"math"
 	"time"
 	"unicode/utf8"
 
-	"github.com/lunuan/go-log/bufferpool"
-	"github.com/lunuan/go-log/pool"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
 )
@@ -23,7 +22,7 @@ const (
 )
 
 var (
-	_jsonPool        = pool.New(func() *kvEncoder { return &kvEncoder{} })
+	_jsonPool        = NewPool(func() *kvEncoder { return &kvEncoder{} })
 	nullLiteralBytes = []byte("null")
 	encodeErrorBytes = []byte("encodeError")
 )
@@ -58,7 +57,7 @@ func NewkvEncoder(cfg zapcore.EncoderConfig) *kvEncoder {
 
 	return &kvEncoder{
 		EncoderConfig: &cfg,
-		buf:           bufferpool.Get(),
+		buf:           BufferPool.Get(),
 		hostname:      hostname,
 	}
 }
@@ -68,13 +67,13 @@ func (enc kvEncoder) Clone() zapcore.Encoder {
 	clone.EncoderConfig = enc.EncoderConfig
 	// clone.spaced = enc.spaced
 	clone.openNamespaces = enc.openNamespaces
-	clone.buf = bufferpool.Get()
+	clone.buf = BufferPool.Get()
 	clone.buf.Write(enc.buf.Bytes())
 	return clone
 }
 
 func (c kvEncoder) EncodeEntry(ent zapcore.Entry, fields []zapcore.Field) (*buffer.Buffer, error) {
-	line := bufferpool.Get()
+	line := BufferPool.Get()
 
 	// We don't want the entry's metadata to be quoted and escaped (if it's
 	// encoded as strings), which means that we can't use the JSON encoder. The
@@ -83,33 +82,25 @@ func (c kvEncoder) EncodeEntry(ent zapcore.Entry, fields []zapcore.Field) (*buff
 	// If this ever becomes a performance bottleneck, we can implement
 	// ArrayEncoder for our plain-text format.
 	arr := getSliceEncoder()
+	// timestrap
 	if c.TimeKey != "" && c.EncodeTime != nil && !ent.Time.IsZero() {
 		c.EncodeTime(ent.Time, arr)
 	}
+	// [process]
+	pid := strconv.Itoa(os.Getpid())
+	arr.AppendString("[" + pid + "]")
+	// hostname
+	arr.AppendString(c.hostname)
+	// level
 	if c.LevelKey != "" && c.EncodeLevel != nil {
 		c.EncodeLevel(ent.Level, arr)
 	}
 
-	arr.AppendString(c.hostname)
-
-	if ent.LoggerName != "" && c.NameKey != "" {
-		nameEncoder := c.EncodeName
-
-		if nameEncoder == nil {
-			// Fall back to FullNameEncoder for backward compatibility.
-			nameEncoder = zapcore.FullNameEncoder
-		}
-
-		nameEncoder(ent.LoggerName, arr)
+	// caller
+	if ent.Caller.Defined && c.EncodeCaller != nil {
+		c.EncodeCaller(ent.Caller, arr)
 	}
-	if ent.Caller.Defined {
-		if c.CallerKey != "" && c.EncodeCaller != nil {
-			c.EncodeCaller(ent.Caller, arr)
-		}
-		if c.FunctionKey != "" {
-			arr.AppendString(ent.Caller.Function)
-		}
-	}
+
 	for i := range arr.elems {
 		if i > 0 {
 			line.AppendString(c.ConsoleSeparator)
@@ -473,7 +464,7 @@ func defaultReflectedEncoder(w io.Writer) zapcore.ReflectedEncoder {
 
 func (enc *kvEncoder) resetReflectBuf() {
 	if enc.reflectBuf == nil {
-		enc.reflectBuf = bufferpool.Get()
+		enc.reflectBuf = BufferPool.Get()
 		enc.reflectEnc = enc.NewReflectedEncoder(enc.reflectBuf)
 	} else {
 		enc.reflectBuf.Reset()
